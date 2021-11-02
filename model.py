@@ -1,3 +1,4 @@
+from operator import mod
 import os
 import pprint
 import tempfile
@@ -92,11 +93,15 @@ index.index_from_dataset(
   tf.data.Dataset.zip((movies.batch(100), movies.batch(100).map(model.movie_model)))
 )
 
+
 scann_index = tfrs.layers.factorized_top_k.ScaNN(model.user_model)
 scann_index.index_from_dataset(
   tf.data.Dataset.zip((movies.batch(100), movies.batch(100).map(model.movie_model)))
 )
 
-# Get recommendations.
-_, titles = scann_index(tf.constant(["43"]))
-print(f"Recommendations for user 43: {titles[0, :3]}")
+tf.saved_model.save(
+      index,
+       './test/',
+      options=tf.saved_model.SaveOptions(namespace_whitelist=["Scann"])
+  )
+
